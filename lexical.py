@@ -1,4 +1,5 @@
 from char_def import CHAR_DEF
+# import Token
 
 def validate_char(char):
     for cdef in CHAR_DEF:
@@ -11,7 +12,7 @@ def create_symbol_table(char_map_list):
     table = []
 
     for char in char_map_list:
-        curr_type = char.get('char-type')
+        curr_type = char.get('char_type')
         if curr_type != 'SPACE' and curr_type != 'BREAK-LINE':
             if curr_type == 'DIGIT':
                 aux_str += char.get('lexeme')
@@ -19,22 +20,23 @@ def create_symbol_table(char_map_list):
                 if len(aux_str) > 0:
                     table.append({
                         'lexeme': aux_str,
-                        'type': 'DIGIT'
+                        'char_type': 'DIGIT'
                     })
                     aux_str = ''
-                    if curr_type == 'EOF': break
                     table.append(char)
+                    if curr_type == 'EOF': break
         elif curr_type == 'BREAK-LINE':
             if len(aux_str) > 0:
                 table.append({
                     'lexeme': aux_str,
-                    'type': 'DIGIT'
+                    'char_type': 'DIGIT'
                 })
                 aux_str = ''
 
     return table
 
-def printtl(tl):
+def printtl(tl, out_type):
+    print(f'-------------------------------\n~> {out_type}\n')
     for tk in tl:
         print(tk)
 
@@ -49,13 +51,16 @@ def lexical_analyzer(f):
             if is_valid:
                 char_map_list.append({
                     "lexeme": char,
-                    'char-type': char_type})
+                    'char_type': char_type})
             else:
                 raise Exception('\'' + char + '\' is not a valid character.')
         # print(char_map_list)
         token_list = create_symbol_table(char_map_list)
 
-        with open('output_files/lex_out.txt', 'w') as output:
-            output.write(str(token_list))
+        LEX_OUTPUT_FILENAME = 'output_files/lex_out.txt'
+        with open(LEX_OUTPUT_FILENAME, 'w') as output:
+            for tk in token_list:
+                output.write(str(tk) + '\n')
 
-        printtl(token_list)
+        printtl(token_list, 'LEXICAL')
+        return LEX_OUTPUT_FILENAME

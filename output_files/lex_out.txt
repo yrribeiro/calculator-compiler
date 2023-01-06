@@ -1,1 +1,8 @@
-[{'lexeme': '10', 'type': 'DIGIT'}, {'lexeme': '+', 'char-type': 'SUM-OP'}, {'lexeme': '7', 'type': 'DIGIT'}, {'lexeme': '+', 'char-type': 'SUM-OP'}, {'lexeme': '5', 'type': 'DIGIT'}, {'lexeme': '*', 'char-type': 'MUL-OP'}, {'lexeme': '9', 'type': 'DIGIT'}, {'lexeme': '/', 'char-type': 'DIV-OP'}]
+{'lexeme': '10', 'char_type': 'DIGIT'}
+{'lexeme': '+', 'char_type': 'SUM-OP'}
+{'lexeme': '7', 'char_type': 'DIGIT'}
+{'lexeme': '+', 'char_type': 'SUM-OP'}
+{'lexeme': '5', 'char_type': 'DIGIT'}
+{'lexeme': '*', 'char_type': 'MUL-OP'}
+{'lexeme': '9', 'char_type': 'DIGIT'}
+{'lexeme': '/', 'char_type': 'DIV-OP'}
