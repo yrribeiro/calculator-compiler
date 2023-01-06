@@ -1,6 +1,6 @@
 from lexical import lexical_analyzer
 from parserr import parserr
-# from semantic import semantic
+from semantic import semantic
 
 filename = './example.txt'
 
@@ -10,5 +10,5 @@ filename = lexical_analyzer(flex)
 fpar = open(filename, 'r')
 filename  = parserr(fpar)
 
-# fsem = open(filename, 'r')
-# filename  = semantic(fsem)
+fsem = open(filename, 'r')
+filename  = semantic(fsem)

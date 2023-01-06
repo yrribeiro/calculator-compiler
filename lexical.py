@@ -24,7 +24,7 @@ def create_symbol_table(char_map_list):
                         'char_type': 'DIGIT'
                     })
                     aux_str = ''
-                    
+
                 if curr_type == 'EOF': break
                 else:
                     table.append(char)
@@ -35,7 +35,7 @@ def create_symbol_table(char_map_list):
                     'char_type': 'DIGIT'
                 })
                 aux_str = ''
-        
+
 
     return table
 
@@ -52,7 +52,7 @@ def lexical_analyzer(f):
     for line in f:
         for char in line:
             is_valid, char_type = validate_char(char)
-            
+
             if is_valid:
                 char_map_list.append({
                     "lexeme": char,

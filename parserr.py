@@ -1,7 +1,7 @@
 import ast
 from collections import deque
 
-from Objects import Token, Node
+from Objects import Token
 from lexical import printtl
 
 global tokens, ops
