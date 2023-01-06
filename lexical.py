@@ -39,10 +39,11 @@ def create_symbol_table(char_map_list):
 
     return table
 
-def printtl(tl, out_type):
+def printtl(tl=[], out_type=''):
     print(f'-------------------------------\n~> {out_type}\n')
-    for tk in tl:
-        print(tk)
+    if len(tl)>0:
+        for tk in tl:
+            print(tk)
 
 def lexical_analyzer(f):
     char_map_list = []

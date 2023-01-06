@@ -4,48 +4,52 @@ from collections import deque
 from Objects import Token, Node
 from lexical import printtl
 
-global tokens
+global tokens, ops
+ops = ('SUM-OP', '+', 'MINUS-OP', '-', 'DIV-OP', '/', 'MUL-OP', '*')
 tokens = []
 
-def push_on_precedence(op_input, op_top_stack):
-    '''
-    (  >  *  ==  /  >  +  ==  -  >  $
-    '''
-    reference =  {'(':3, '*':2, '/':2, '+':1, '-':1, '$':0}
-    if reference.get(op_input) > reference.get(op_top_stack):
-        pass
+def has_higher_precedence(op_input, op_top_stack):
+    reference =  {'(':6, '/':5, '*':4, '+':3, '-':2, '$':1}
+    return reference.get(op_input) > reference.get(op_top_stack)
 
-def buildTree():
-    auxList = deque()
-    root=Node()
-    lastNode=Node()
-    flag=0
-    leng= len(tokens)
-    ops = ('SUM-OP', 'MINUS-OP', 'DIV-OP', 'MUL-OP')
-     
+def make_node(operands, operators, curr_op=''):
+    str_t = ''
+    op = operators.popleft()
+    right = operands.popleft()
+    left = operands.popleft()
+
+    str_t = f'{op}({left},{right})'
+    operands.appendleft(str_t)
+    if curr_op: operators.appendleft(curr_op)
+
+def build_tree(operands, operators):
     for token in tokens:
-        node = Node(token.lexeme)
-        if token.char_type == 'DIGIT':
-            auxList.appendleft(node)
-        if token.char_type in ops:
-            node.left=auxList.popleft()
-            if(flag==0):
-                root = node
-                flag = 1
-                lastNode=node
+        curr_type = token.char_type
+        curr_lexeme = token.lexeme
+
+        if curr_type == 'DIGIT':
+            operands.appendleft(curr_lexeme)
+        if curr_type in ops:
+            if has_higher_precedence(curr_lexeme, operators[0]):
+                operators.appendleft(curr_lexeme)
             else:
-                lastNode.right=node
-                lastNode=node
+                make_node(operands, operators, curr_lexeme)
+        # print(operands, operators)
 
-    lastNode.right=Node(tokens[len(tokens-1)].lexeme)
+    while len(operators) > 1:
+        make_node(operands, operators)
 
-    for node in auxList:
-        print(node.data)
+    return operands[0]
+
+# def print_tree(str_t):
+#     for char in str_t:
+#         if char in ops:
 
 
 def parserr(f):
-    operators, operands = deque(), deque()
-    operators.append(Token('$', 'EOF'))
+    operands, operators = deque(), deque()
+    # operators.append(Token('$', 'EOF')) TODO
+    operators.append('$')
 
     for line in f:
         tk_dict = ast.literal_eval(line)
@@ -55,35 +59,35 @@ def parserr(f):
                 tk_dict.get('char_type')
             )
         )
-    
+
+    printtl(out_type='PARSER')
+
     paren_stack = deque()
     for i in range(len(tokens)):
-        ops = ('SUM-OP', 'MINUS-OP', 'DIV-OP', 'MUL-OP')
         curr_type = tokens[i].char_type
         if (i>0):
             if (curr_type in ops) and (tokens[i-1].char_type in ops):
-                raise Exception('erro 1 - dois operadores juntos')
+                raise Exception('Cannot recognize pattern: Too many operators')
         if (i==0 and (curr_type != 'DIGIT' and curr_type != 'OPEN-PAR')):
-            raise Exception('erro 2 - começando com operador')
-        
+            raise Exception('Cannot start with an arithmetic operator')
+
         if curr_type == 'OPEN-PAR':
             paren_stack.appendleft(tokens[i].lexeme)
         elif curr_type == 'CLOSE-PAR':
             if len(paren_stack) > 0:
                 paren_stack.popleft()
             else:
-                raise Exception('erro 3 - tentando tirar parenteses sem ter')
-    
+                raise Exception('No opening parenthesis left')
+
     if len(paren_stack) > 0:
-        raise Exception('erro 4 - sobrou parenteses')
+        raise Exception('Too many opening parenthesis left')
 
-    buildTree()
-    
-    # for token in tokens:
-    #     print(token.lexeme)
+    # print_tree(build_tree(operands, operators)) #TODO
+    flatten_tree = build_tree(operands, operators)
+    print(flatten_tree)
 
-    # PAR_OUTPUT_FILENAME = 'output_files/parser_out.txt'
-        # with open(PAR_OUTPUT_FILENAME, 'w') as output:
-            # output.write(str(token_list))
+    PAR_OUTPUT_FILENAME = 'output_files/parser_out.txt'
+    with open(PAR_OUTPUT_FILENAME, 'w') as output:
+        output.write(str(build_tree(operands, operators)))
 
-    return '' #PAR_OUTPUT_FILENAME
+    return PAR_OUTPUT_FILENAME
