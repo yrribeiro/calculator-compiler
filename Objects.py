@@ -4,7 +4,8 @@ class Token():
         self.char_type  = char_type
 
 class Node:
-    def __init__(self, data):
+    def __init__(self, data=''):
         self.data = data
         self.left = None
         self.right = None
+

@@ -4,16 +4,8 @@ from collections import deque
 from Objects import Token, Node
 from lexical import printtl
 
-global tokens, operators, operands
-curr_pos = 0
+global tokens
 tokens = []
-
-def next():
-    return tokens[curr_pos+1]
-
-def make_node(op_top):
-    no = TreeNode('+', '10', '7')
-    operators.popleft()
 
 def push_on_precedence(op_input, op_top_stack):
     '''
@@ -21,24 +13,35 @@ def push_on_precedence(op_input, op_top_stack):
     '''
     reference =  {'(':3, '*':2, '/':2, '+':1, '-':1, '$':0}
     if reference.get(op_input) > reference.get(op_top_stack):
-        operators.appendleft(op_input)
-        return
-    else:
-        make_node(op_top_stack)
-        return 
+        pass
 
+def buildTree():
+    auxList = deque()
+    root=Node()
+    lastNode=Node()
+    flag=0
+    leng= len(tokens)
+    ops = ('SUM-OP', 'MINUS-OP', 'DIV-OP', 'MUL-OP')
+     
+    for token in tokens:
+        node = Node(token.lexeme)
+        if token.char_type == 'DIGIT':
+            auxList.appendleft(node)
+        if token.char_type in ops:
+            node.left=auxList.popleft()
+            if(flag==0):
+                root = node
+                flag = 1
+                lastNode=node
+            else:
+                lastNode.right=node
+                lastNode=node
 
-def expr(operators, operands):
-    curr_pos = 0
-    curr_type = tokens[curr_pos].char_type
-    while curr_type != 'EOF':
-        curr_lexeme = tokens[curr_pos].lexeme
-        if curr_type == 'DIGIT':
-            operands.appendleft(curr_lexeme)
-        else:
-            push_on_precedence(curr_lexeme, operators[0])
-        curr_pos = curr_pos + 1
-        curr_type = tokens[curr_pos].char_type
+    lastNode.right=Node(tokens[len(tokens-1)].lexeme)
+
+    for node in auxList:
+        print(node.data)
+
 
 def parserr(f):
     operators, operands = deque(), deque()
@@ -72,10 +75,9 @@ def parserr(f):
                 raise Exception('erro 3 - tentando tirar parenteses sem ter')
     
     if len(paren_stack) > 0:
-        raise Exception('erro 4 - sobrou parenteses'
+        raise Exception('erro 4 - sobrou parenteses')
 
-    
-
+    buildTree()
     
     # for token in tokens:
     #     print(token.lexeme)
@@ -85,22 +87,3 @@ def parserr(f):
             # output.write(str(token_list))
 
     return '' #PAR_OUTPUT_FILENAME
-
-
-# def factor():
-#     '''
-#     factor → [0-9] | ( expr ) | $
-#     '''
-
-# def term():
-#     '''
-#     term → factor * term | factor / termo | factor
-#     '''
-#     factor()
-
-# def expr():
-#     '''
-#     expr →  term + expr | term - expr | term
-#     '''
-#     term()
-    
