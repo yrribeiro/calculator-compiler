@@ -1,5 +1,5 @@
 from char_def import CHAR_DEF
-# import Token
+# import Objects
 
 def validate_char(char):
     for cdef in CHAR_DEF:
@@ -9,11 +9,12 @@ def validate_char(char):
 
 def create_symbol_table(char_map_list):
     aux_str = ''
+    aux_str2 = ''
     table = []
 
     for char in char_map_list:
         curr_type = char.get('char_type')
-        if curr_type != 'SPACE' and curr_type != 'BREAK-LINE':
+        if curr_type != 'BREAK-LINE':
             if curr_type == 'DIGIT':
                 aux_str += char.get('lexeme')
             else:
@@ -23,8 +24,10 @@ def create_symbol_table(char_map_list):
                         'char_type': 'DIGIT'
                     })
                     aux_str = ''
+                    
+                if curr_type == 'EOF': break
+                else:
                     table.append(char)
-                    if curr_type == 'EOF': break
         elif curr_type == 'BREAK-LINE':
             if len(aux_str) > 0:
                 table.append({
@@ -32,6 +35,7 @@ def create_symbol_table(char_map_list):
                     'char_type': 'DIGIT'
                 })
                 aux_str = ''
+        
 
     return table
 
@@ -47,7 +51,7 @@ def lexical_analyzer(f):
     for line in f:
         for char in line:
             is_valid, char_type = validate_char(char)
-        
+            
             if is_valid:
                 char_map_list.append({
                     "lexeme": char,
