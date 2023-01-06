@@ -54,4 +54,8 @@ def lexical_analyzer(f):
                 raise Exception('\'' + char + '\' is not a valid character.')
         # print(char_map_list)
         token_list = create_symbol_table(char_map_list)
+
+        with open('output_files/lex_out.txt', 'w') as output:
+            output.write(str(token_list))
+
         printtl(token_list)
