@@ -13,12 +13,12 @@ def has_higher_precedence(op_input, op_top_stack):
     return reference.get(op_input) > reference.get(op_top_stack)
 
 def make_node(operands, operators, curr_op=''):
-    str_t = ''
+    str_t = {}
     op = operators.popleft()
     right = operands.popleft()
     left = operands.popleft()
 
-    str_t = f'{op}({left},{right})'
+    str_t[op] = [left, right]
     operands.appendleft(str_t)
     if curr_op: operators.appendleft(curr_op)
 
@@ -70,6 +70,8 @@ def parserr(f):
                 raise Exception('Cannot recognize pattern: Too many operators')
         if (i==0 and (curr_type != 'DIGIT' and curr_type != 'OPEN-PAR')):
             raise Exception('Cannot start with an arithmetic operator')
+        if i==len(tokens)-1 and (curr_type != 'DIGIT' and curr_type != 'CLOSE-PAR'):
+            raise Exception('Cannot end with an arithmetic operator')
 
         if curr_type == 'OPEN-PAR':
             paren_stack.appendleft(tokens[i].lexeme)
