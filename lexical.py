@@ -50,15 +50,18 @@ def lexical_analyzer(f):
     token_list = []
 
     for line in f:
-        for char in line:
-            is_valid, char_type = validate_char(char)
+        if len(line) > 1:
+            for char in line:
+                is_valid, char_type = validate_char(char)
 
-            if is_valid:
-                char_map_list.append({
-                    "lexeme": char,
-                    'char_type': char_type})
-            else:
-                raise Exception('\'' + char + '\' is not a valid character.')
+                if is_valid:
+                    char_map_list.append({
+                        "lexeme": char,
+                        'char_type': char_type})
+                else:
+                    raise Exception('\'' + char + '\' is not a valid character.')
+        else:
+            return line
         # print(char_map_list)
         token_list = create_symbol_table(char_map_list)
 

@@ -7,9 +7,11 @@ print('')
 
 flex = open(filename, 'r')
 filename = lexical_analyzer(flex)
+if filename != '$':
+    fpar = open(filename, 'r')
+    filename  = parserr(fpar)
 
-fpar = open(filename, 'r')
-filename  = parserr(fpar)
-
-semantic()
+    semantic()
+else:
+    raise Exception('Empty input.')
 print('')
