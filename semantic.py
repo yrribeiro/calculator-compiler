@@ -51,7 +51,7 @@ class BinaryExpressionTree(object):
         """
         Insert the postfix expression into the tree using stack
         """
-        postfix_exp = self.infix_to_postfix(expression)
+        postfix_exp = self.infix_to_postfix(expression) # 8 1 -
         stack = deque()
         char = postfix_exp[0]
         node = BinaryTreeNode(char)
@@ -61,16 +61,14 @@ class BinaryExpressionTree(object):
         i = 1
         while len(stack) != 0:
             char = postfix_exp[i]
-            if '.' in char or char.isdigit():
+            if char.isdigit(): # or '.' in char TODO float numbers
                 node = BinaryTreeNode(char)
                 stack.appendleft(node)
             else:
                 operator_node = BinaryTreeNode(char)
                 operator_node.operator = True
-                right_child = stack.popleft()
-                left_child = stack.popleft()
-                operator_node.right = right_child
-                operator_node.left = left_child
+                operator_node.right = stack.popleft()
+                operator_node.left = stack.popleft()
                 stack.appendleft(operator_node)
                 if len(stack) == 1 and i == len(postfix_exp) - 1:
                     self.root = stack.popleft()
@@ -88,8 +86,6 @@ class BinaryExpressionTree(object):
         """
         Traverse this binary tree with recursive in-order traversal (DFS).
         Start at the given node and visit each node with the given function.
-        Running time: O(n) we are visiting each node
-        Memory usage: O(n) when node is visited we are adding new item to list
         """
 
         if(node):
@@ -122,20 +118,19 @@ class BinaryExpressionTree(object):
         left_value = self.evaluate(node.left)
         right_value = self.evaluate(node.right)
 
-        # addition
         if node.data == "+":
 
             return left_value + right_value
-        # subtraction
+
         elif node.data == "-":
             return left_value - right_value
-        # division
+
         elif node.data == "/":
             return left_value / right_value
-        # multiplication
+
         elif node.data == "*":
             return left_value * right_value
-        # power
+
         else:
             return left_value ** right_value
 
@@ -147,7 +142,7 @@ class BinaryExpressionTree(object):
         """
 
         precedence_order = {'+': 0, '-': 0, '*': 1, '/': 1}
-        associativity = {'+': "LR", '-': "LR", '*': "LR", '/': "LR"}
+        # associativity = {'+': "LR", '-': "LR", '*': "LR", '/': "LR"}
 
 
         i = 0
@@ -166,12 +161,12 @@ class BinaryExpressionTree(object):
                 else:
                     top_element = stack[0]
                     if precedence_order[char] == precedence_order[top_element]:
-                        if associativity[char] == "LR":
+                        # if associativity[char] == "LR":
                             popped_element = stack.popleft()
                             postfix.append(popped_element)
-                        elif associativity[char] == "RL":
-                            stack.appendleft(char)
-                            i += 1
+                        # elif associativity[char] == "RL":
+                        #     stack.appendleft(char)
+                        #     i += 1
                     elif precedence_order[char] > precedence_order[top_element]:
                         stack.appendleft(char)
                         i += 1
@@ -206,10 +201,12 @@ class BinaryExpressionTree(object):
 
 def semantic():
     printtl(out_type='SEMANTIC')
-    user_input = "5+(2*8)"
+    f = open('./example.txt', 'r')
+    for line in f:
+        user_input = line[:-1]
 
     tree_obj = BinaryExpressionTree(user_input)
 
-    # print(f"Tree: {tree_obj}")
-    # print(tree_obj.items_in_order())
+    # # print(f"Tree: {tree_obj}")
+    # print(f'tree_obj.items_in_order()')
     print(f'Valor da expressão = {tree_obj.evaluate()}')
